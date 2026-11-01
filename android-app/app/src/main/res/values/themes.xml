@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Brand is dark-only: the reference design defines a single dark identity. -->
+    <style name="Theme.Hudhud" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/hudhud_primary</item>
+        <item name="colorPrimaryVariant">@color/hudhud_primary_variant</item>
+        <item name="colorOnPrimary">@color/hudhud_on_primary</item>
+        <item name="colorSecondary">@color/hudhud_secondary</item>
+        <item name="colorSurface">@color/hudhud_surface</item>
+        <item name="colorOnSurface">@color/hudhud_on_surface</item>
+        <item name="android:colorBackground">@color/hudhud_background</item>
+        <item name="android:windowBackground">@color/hudhud_background</item>
+        <item name="android:statusBarColor">@color/hudhud_background</item>
+        <item name="android:navigationBarColor">@color/hudhud_background</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+    </style>
+</resources>

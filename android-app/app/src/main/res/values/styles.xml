@@ -1,0 +1,104 @@
+<resources>
+
+    <!-- Typography scale. Screens reference these appearances, never raw sp sizes. -->
+    <style name="TextAppearance.Hudhud.Kicker" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0.2</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/hudhud_primary</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.Display" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/hudhud_on_surface</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.Title" parent="TextAppearance.Hudhud.Display" />
+
+    <style name="TextAppearance.Hudhud.Subtitle" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/hudhud_on_surface_muted</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.SectionLabel" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/hudhud_on_surface_muted</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.CardTitle" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/hudhud_on_surface</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.CardBody" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">3dp</item>
+        <item name="android:textColor">@color/hudhud_on_surface_muted</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.Body" parent="TextAppearance.Hudhud.CardBody" />
+
+    <style name="TextAppearance.Hudhud.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/hudhud_on_surface_muted</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.NavLabel" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">10sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/hudhud_on_surface_muted</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.HeroTitle" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/hudhud_on_surface</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.HeroBody" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineSpacingExtra">4dp</item>
+        <item name="android:textColor">#BCD0DE</item>
+    </style>
+
+    <style name="TextAppearance.Hudhud.Pill" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <!-- Flat bordered surface with a ripple: the base for every tappable block. -->
+    <style name="Widget.Hudhud.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/hudhud_surface</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/hudhud_outline</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="rippleColor">@color/hudhud_ripple</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Widget.Hudhud.Card.Pill">
+        <item name="cardCornerRadius">100dp</item>
+        <item name="strokeColor">@color/hudhud_outline</item>
+    </style>
+
+    <style name="Widget.Hudhud.Card.Selectable" parent="Widget.Hudhud.Card">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
+    <!-- Read-only surface: no ripple, no focus target. -->
+    <style name="Widget.Hudhud.Card.Static">
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+    </style>
+
+</resources>

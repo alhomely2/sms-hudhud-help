@@ -1,0 +1,248 @@
+package com.hudhud.app.ui.import
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.hudhud.app.R
+import com.hudhud.app.data.ai.ColumnAnalyzer
+import com.hudhud.app.data.document.ExcelSchemaExtractor
+import com.hudhud.app.data.document.FileValidator
+import com.hudhud.app.data.repository.ImportBatchRepository
+import com.hudhud.app.databinding.ActivityFileImportBinding
+import com.hudhud.app.domain.model.ColumnInfo
+import com.hudhud.app.domain.model.FileSchema
+import com.hudhud.app.domain.model.ImportBatchEntity
+import com.hudhud.app.ui.mapping.ColumnMappingActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+/**
+ * Activity for importing files and selecting import mode.
+ * This is the main entry point for both "Ready Messages" and "Data with Template" flows.
+ */
+class FileImportActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityFileImportBinding
+    private lateinit var fileValidator: FileValidator
+    private lateinit var schemaExtractor: ExcelSchemaExtractor
+    private lateinit var importBatchRepository: ImportBatchRepository
+    private lateinit var columnAnalyzer: ColumnAnalyzer
+
+    private var selectedFileUri: Uri? = null
+    private var selectedFileName: String = ""
+    private var detectedColumns: List<ColumnInfo> = emptyList()
+    private var fileSchema: FileSchema? = null
+    private var isLoading = false
+
+    // Import mode: READY_TEXT or RAW_DATA
+    private var importMode: String = ImportBatchEntity.MODE_RAW_DATA
+
+    // Activity result launcher for file picker
+    private val filePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let { handleFileSelected(it) }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityFileImportBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Initialize components
+        fileValidator = FileValidator(this)
+        schemaExtractor = ExcelSchemaExtractor(this)
+        importBatchRepository = ImportBatchRepository(
+            com.hudhud.app.data.local.AppDatabase.getInstance(this)
+        )
+        columnAnalyzer = ColumnAnalyzer()
+
+        // Get import mode from intent
+        importMode = intent.getStringExtra(EXTRA_IMPORT_MODE) ?: ImportBatchEntity.MODE_RAW_DATA
+
+        setupUI()
+        setupClickListeners()
+    }
+
+    private fun setupUI() {
+        // Set title based on import mode
+        binding.titleText.text = when (importMode) {
+            ImportBatchEntity.MODE_READY_TEXT -> getString(R.string.import_ready_title)
+            else -> getString(R.string.import_template_title)
+        }
+
+        // Setup import mode radio buttons
+        binding.modeGroup.check(
+            if (importMode == ImportBatchEntity.MODE_READY_TEXT) R.id.modeReadyTexts
+            else R.id.modeDataWithTemplate
+        )
+
+        binding.modeGroup.setOnCheckedChangeListener { _, checkedId ->
+            importMode = when (checkedId) {
+                R.id.modeReadyTexts -> ImportBatchEntity.MODE_READY_TEXT
+                else -> ImportBatchEntity.MODE_RAW_DATA
+            }
+            updateInstructions()
+        }
+
+        // Show/hide template selection based on mode
+        updateInstructions()
+    }
+
+    private fun updateInstructions() {
+        binding.instructionsText.text = when (importMode) {
+            ImportBatchEntity.MODE_READY_TEXT -> getString(R.string.import_ready_instructions)
+            else -> getString(R.string.import_template_instructions)
+        }
+    }
+
+    private fun setupClickListeners() {
+        // Select file button
+        binding.selectFileButton.setOnClickListener {
+            openFilePicker()
+        }
+
+        // Continue button
+        binding.continueButton.setOnClickListener {
+            if (selectedFileUri != null && fileSchema != null) {
+                proceedToMapping()
+            } else {
+                Toast.makeText(this, R.string.import_select_file_first, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Back button
+        binding.backButton.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun openFilePicker() {
+        val mimeTypes = arrayOf(
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // xlsx
+            "application/vnd.ms-excel", // xls
+            "application/pdf"
+        )
+        filePickerLauncher.launch(mimeTypes)
+    }
+
+    private fun handleFileSelected(uri: Uri) {
+        selectedFileUri = uri
+        
+        // Validate file
+        val validation = fileValidator.validate(uri)
+        
+        if (!validation.isValid) {
+            showError(validation.error ?: getString(R.string.import_invalid_file))
+            selectedFileUri = null
+            return
+        }
+
+        selectedFileName = validation.fileName ?: "Unknown file"
+        
+        // Show loading
+        setLoading(true)
+        
+        // Extract schema
+        lifecycleScope.launch {
+            try {
+                fileSchema = withContext(Dispatchers.IO) {
+                    schemaExtractor.extractSchema(uri)
+                }
+                
+                if (fileSchema != null && fileSchema!!.columns.isNotEmpty()) {
+                    displayFileInfo()
+                } else {
+                    showError(getString(R.string.import_empty_file))
+                }
+            } catch (e: Exception) {
+                showError(getString(R.string.import_read_error, e.message))
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+
+    private fun displayFileInfo() {
+        // Show file info card
+        binding.fileInfoCard.visibility = View.VISIBLE
+        binding.fileNameText.text = selectedFileName
+        
+        val columns = fileSchema?.columns ?: emptyList()
+        binding.columnCountText.text = getString(R.string.import_column_count, columns.size)
+        binding.rowCountText.text = getString(R.string.import_row_count, fileSchema?.totalRows ?: 0)
+
+        // Display detected columns
+        displayDetectedColumns(columns)
+
+        // Enable continue button
+        binding.continueButton.isEnabled = true
+    }
+
+    private fun displayDetectedColumns(columns: List<ColumnInfo>) {
+        val columnDescriptions = columns.map { column ->
+            val confidence = (column.confidence * 100).toInt()
+            "${column.displayName} (${column.type.name}) - $confidence%"
+        }
+
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            columnDescriptions
+        )
+        binding.columnsList.adapter = adapter
+    }
+
+    private fun proceedToMapping() {
+        selectedFileUri?.let { uri ->
+            // Create import batch
+            lifecycleScope.launch {
+                try {
+                    val batchId = withContext(Dispatchers.IO) {
+                        importBatchRepository.createBatch(
+                            name = selectedFileName,
+                            fileName = selectedFileName,
+                            fileUri = uri.toString(),
+                            importMode = importMode,
+                        )
+                    }
+                    
+                    // Navigate to mapping activity
+                    val intent = Intent(this@FileImportActivity, ColumnMappingActivity::class.java).apply {
+                        putExtra(ColumnMappingActivity.EXTRA_BATCH_ID, batchId)
+                        putExtra(ColumnMappingActivity.EXTRA_FILE_URI, uri.toString())
+                        putExtra(ColumnMappingActivity.EXTRA_IMPORT_MODE, importMode)
+                    }
+                    startActivity(intent)
+                    finish()
+                    
+                } catch (e: Exception) {
+                    showError(getString(R.string.import_save_error, e.message))
+                }
+            }
+        }
+    }
+
+    private fun setLoading(loading: Boolean) {
+        isLoading = loading
+        binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.selectFileButton.isEnabled = !loading
+        binding.continueButton.isEnabled = !loading && selectedFileUri != null
+    }
+
+    private fun showError(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    companion object {
+        const val EXTRA_IMPORT_MODE = "import_mode"
+        const val EXTRA_BATCH_ID = "batch_id"
+    }
+}

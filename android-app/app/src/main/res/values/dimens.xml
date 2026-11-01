@@ -1,0 +1,28 @@
+<resources>
+    <!-- Shared spacing scale. Every screen uses these instead of raw dp values. -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">16dp</dimen>
+    <dimen name="space_lg">24dp</dimen>
+    <dimen name="space_xl">32dp</dimen>
+
+    <dimen name="screen_padding_horizontal">20dp</dimen>
+    <dimen name="screen_padding_top">28dp</dimen>
+    <dimen name="screen_padding_bottom">24dp</dimen>
+
+    <dimen name="radius_card">18dp</dimen>
+    <dimen name="radius_icon_box">14dp</dimen>
+
+    <dimen name="size_icon_box">48dp</dimen>
+    <dimen name="size_icon">24dp</dimen>
+    <dimen name="size_chevron">20dp</dimen>
+    <dimen name="size_status_dot">10dp</dimen>
+    <dimen name="template_selected_stroke">2dp</dimen>
+    <dimen name="template_default_stroke">1dp</dimen>
+    <dimen name="touch_target">48dp</dimen>
+
+    <!-- Bottom navigation: bar height, raised send button, and content inset. -->
+    <dimen name="nav_bar_height">64dp</dimen>
+    <dimen name="nav_bar_container_height">88dp</dimen>
+    <dimen name="nav_send_size">56dp</dimen>
+</resources>

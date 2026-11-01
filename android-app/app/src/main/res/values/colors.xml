@@ -1,0 +1,33 @@
+<resources>
+    <!-- Dark brand palette taken from the approved reference screen. -->
+    <color name="hudhud_background">#0B1220</color>
+    <color name="hudhud_surface">#131D31</color>
+    <color name="hudhud_surface_alt">#182742</color>
+
+    <color name="hudhud_primary">#2BC8C4</color>
+    <color name="hudhud_primary_variant">#1FA3A0</color>
+    <color name="hudhud_on_primary">#04211F</color>
+    <color name="hudhud_primary_container">#123842</color>
+
+    <color name="hudhud_secondary">#7FB0FF</color>
+    <color name="hudhud_secondary_container">#1B2C4C</color>
+
+    <color name="hudhud_on_background">@color/hudhud_on_surface</color>
+    <color name="hudhud_on_surface">#ECF3F8</color>
+    <color name="hudhud_on_surface_variant">@color/hudhud_on_surface_muted</color>
+    <color name="hudhud_on_surface_muted">#94A7BC</color>
+    <color name="hudhud_outline">#22314B</color>
+    <color name="hudhud_divider">#22314B</color>
+
+    <color name="hudhud_hero_start">#12404B</color>
+    <color name="hudhud_hero_end">#101C36</color>
+    <color name="hudhud_hero_stroke">#1D3A4F</color>
+
+    <color name="hudhud_ripple">#332BC8C4</color>
+    <color name="hudhud_ok">#2BC8C4</color>
+    <color name="hudhud_success">@color/hudhud_ok</color>
+    <color name="hudhud_warn">#F2B45C</color>
+    <color name="hudhud_warning">@color/hudhud_warn</color>
+    <color name="hudhud_warning_bg">#332A2112</color>
+    <color name="hudhud_error">#FF6B6B</color>
+</resources>

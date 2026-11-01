@@ -1,0 +1,27 @@
+.gradle-home/
+.tmp/
+.gradle/
+.kotlin/
+**/.gradle/
+**/.idea/
+**/build/
+**/captures/
+**/*.iml
+**/*.log
+**/local.properties
+**/*.jks
+**/*.keystore
+**/*.p12
+**/*.pem
+**/*.key
+**/google-services.json
+**/secrets.properties
+
+ECC/
+/_verify_hudhud_campaign.db*
+/*.db-shm
+/*.db-wal
+/1793398456600.jpg
+/template_test.xlsx
+/ui*.xml
+/مستندات عينات/

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hudhud_background"
+    android:orientation="vertical">
+
+    <!-- Header with Tabs -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_padding_horizontal"
+        android:paddingTop="20dp"
+        android:paddingEnd="@dimen/screen_padding_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_kicker"
+            android:textAppearance="@style/TextAppearance.Hudhud.Kicker" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/connection_title"
+            android:textAppearance="@style/TextAppearance.Hudhud.Display" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/settingsTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/hudhud_primary"
+            app:tabSelectedTextColor="@color/hudhud_primary"
+            app:tabTextColor="@color/hudhud_on_surface_muted" />
+    </LinearLayout>
+
+    <!-- ViewPager for Tab Content -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/settingsViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Bottom Navigation -->
+    <include
+        android:id="@+id/bottomNav"
+        layout="@layout/view_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_bar_container_height" />
+</LinearLayout>
