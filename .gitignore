@@ -21,7 +21,6 @@ ECC/
 /_verify_hudhud_campaign.db*
 /*.db-shm
 /*.db-wal
-/1793398456600.jpg
 /template_test.xlsx
-/ui*.xml
-/مستندات عينات/
+/مستندات عينات/*.pdf
+/مستندات عينات/*.xlsx
